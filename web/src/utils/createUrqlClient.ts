@@ -94,7 +94,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
   }
 
   console.log(
-    "🚀 ~ file: createUrqlClient.ts ~ line 98 ~ createUrqlClient ~ process.env.API_URL",
+    "🚀 ~file: createUrqlClient.ts ~ line 98 ~ createUrqlClient ~ process.env.API_URL",
     process.env.NEXT_PUBLIC_API_URL
   );
 
