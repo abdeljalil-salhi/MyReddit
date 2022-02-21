@@ -191,7 +191,6 @@ export class userResolver {
         .execute();
       user = result.raw[0];
     } catch (err) {
-      console.log(err);
       if (err.code === "23505" || err.detail.includes("already exists")) {
         return {
           errors: [
@@ -263,7 +262,6 @@ export class userResolver {
       req.session.destroy((err) => {
         res.clearCookie(COOKIE_NAME);
         if (err) {
-          console.log(err);
           resolve(false);
           return;
         }
