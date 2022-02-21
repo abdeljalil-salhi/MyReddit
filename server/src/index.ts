@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import "dotenv-safe/config";
 import express from "express";
 import session from "express-session";
 import connectRedis from "connect-redis";
@@ -22,11 +23,12 @@ import { createUpdootLoader } from "./utils/createUpdootLoader";
 const main = async () => {
   const conn = await createConnection({
     type: "postgres",
-    database: "postgres",
-    username: "postgres",
-    password: "postgres",
+    // database: "postgres",
+    // username: "postgres",
+    // password: "postgres",
+    url: process.env.DATABASE_URL,
     logging: true,
-    synchronize: true, // setup migrations
+    // synchronize: true, // setup migrations
     migrations: [path.join(__dirname, "./migrations/*")],
     entities: [Post, User, Updoot],
   });
@@ -42,15 +44,17 @@ const main = async () => {
   const app = express();
 
   const RedisStore = connectRedis(session);
-  const redis = new Redis({
-    host: "127.0.0.1",
-    port: 6379,
-  });
+  // const redis = new Redis({
+  //   host: "127.0.0.1",
+  //   port: 6379,
+  // });
+  const redis = new Redis(process.env.REDIS_URL);
+  app.set("proxy", 1);
   redis.on("error", (err: any) => console.log("Redis Client Error", err));
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CORS_ORIGIN,
       credentials: true,
     })
   );
@@ -67,9 +71,10 @@ const main = async () => {
         httpOnly: true, // only requests
         sameSite: "lax", // csrf
         secure: __prod__, // only https requests
+        domain: __prod__ ? ".myreddit.com" : undefined,
       },
       saveUninitialized: false,
-      secret: "ldfkkefehjfezrfhezfhzerhfzegfiegfkesgkl",
+      secret: process.env.SESSION_SECRET,
       resave: false,
     })
   );
@@ -89,7 +94,10 @@ const main = async () => {
   });
 
   await apolloServer.start();
-  console.log("🚀 ~ file: index.ts ~ line 92 ~ main ~ apolloServer", apolloServer)
+  // console.log(
+  //   "🚀 ~ file: index.ts ~ line 92 ~ main ~ apolloServer",
+  //   apolloServer
+  // );
   apolloServer.applyMiddleware({
     app,
     cors: false,
@@ -102,8 +110,8 @@ const main = async () => {
     });
   });
 
-  app.listen(5000, () => {
-    console.log("running on localhost:5000...");
+  app.listen(process.env.PORT, () => {
+    console.log(`running on localhost:${process.env.PORT}...`);
   });
 };
 

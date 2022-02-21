@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
+require("dotenv-safe/config");
 const express_1 = __importDefault(require("express"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
@@ -25,24 +26,19 @@ const createUpdootLoader_1 = require("./utils/createUpdootLoader");
 const main = async () => {
     const conn = await (0, typeorm_1.createConnection)({
         type: "postgres",
-        database: "postgres",
-        username: "postgres",
-        password: "postgres",
+        url: process.env.DATABASE_URL,
         logging: true,
-        synchronize: true,
         migrations: [path_1.default.join(__dirname, "./migrations/*")],
         entities: [Post_1.Post, User_1.User, Updoot_1.Updoot],
     });
     await conn.runMigrations();
     const app = (0, express_1.default)();
     const RedisStore = (0, connect_redis_1.default)(express_session_1.default);
-    const redis = new ioredis_1.default({
-        host: "127.0.0.1",
-        port: 6379,
-    });
+    const redis = new ioredis_1.default(process.env.REDIS_URL);
+    app.set("proxy", 1);
     redis.on("error", (err) => console.log("Redis Client Error", err));
     app.use((0, cors_1.default)({
-        origin: "http://localhost:3000",
+        origin: process.env.CORS_ORIGIN,
         credentials: true,
     }));
     app.use((0, express_session_1.default)({
@@ -56,9 +52,10 @@ const main = async () => {
             httpOnly: true,
             sameSite: "lax",
             secure: constants_1.__prod__,
+            domain: constants_1.__prod__ ? ".myreddit.com" : undefined,
         },
         saveUninitialized: false,
-        secret: "ldfkkefehjfezrfhezfhzerhfzegfiegfkesgkl",
+        secret: process.env.SESSION_SECRET,
         resave: false,
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
@@ -85,8 +82,8 @@ const main = async () => {
             message: "running",
         });
     });
-    app.listen(5000, () => {
-        console.log("running on localhost:5000...");
+    app.listen(process.env.PORT, () => {
+        console.log(`running on localhost:${process.env.PORT}...`);
     });
 };
 main().catch((err) => {
