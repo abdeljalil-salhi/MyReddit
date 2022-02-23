@@ -95,11 +95,11 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
 
   console.log(
     "🚀 ~ file: createUrqlClient.ts ~ line 98 ~ createUrqlClient ~ process.env.API_URL",
-    process.env.NEXT_PUBLIC_API_URL
+    process.env.NEXT_PUBLIC_API_URL as string
   );
 
   return {
-    url: process.env.NEXT_PUBLIC_API_URL,
+    url: process.env.NEXT_PUBLIC_API_URL as string,
     fetchOptions: {
       credentials: "include" as const,
       headers: cookie
