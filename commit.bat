@@ -1,8 +1,8 @@
-@echo off
-title MyReddit @abdeljalil.salhi
-color 07
+@ECHO OFF
+TITLE MyReddit @abdeljalil.salhi
+COLOR 07
 :RESTART
-cls
+CLEAR || CLS
 ECHO ================================================
 ECHO /                 MyReddit Git                 \
 ECHO ================================================
@@ -13,4 +13,6 @@ git add .
 git commit -m "%message%"
 git pull https://github.com/abdeljalil-salhi/MyReddit.git
 git push origin main
-pause
+CLEAR || CLS
+ECHO commited: %message%
+PAUSE
