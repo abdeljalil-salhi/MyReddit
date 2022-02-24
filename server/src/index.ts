@@ -49,7 +49,7 @@ const main = async () => {
   //   port: 6379,
   // });
   const redis = new Redis(process.env.REDIS_URL);
-  app.set("proxy", 1);
+  app.set("trust proxy", 1);
   redis.on("error", (err: any) => console.log("Redis Client Error", err));
 
   app.use(
