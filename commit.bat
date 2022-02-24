@@ -13,6 +13,6 @@ git add .
 git commit -m "%message%"
 git pull https://github.com/abdeljalil-salhi/MyReddit.git
 git push origin main
-CLEAR || CLS
+ECHO ================================================
 ECHO commited: %message%
 PAUSE
