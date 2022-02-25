@@ -7,6 +7,7 @@ import { Layout } from "../components/Layout";
 import { InputField } from "../components/InputField";
 import { useIsAuth } from "../utils/useIsAuth";
 import { useCreatePostMutation } from "../generated/graphql";
+import { withApollo } from "../utils/withApollo";
 
 interface createPostProps {}
 
@@ -61,4 +62,4 @@ const CreatePost: React.FC<createPostProps> = ({}) => {
   );
 };
 
-export default CreatePost;
+export default withApollo({ ssr: false })(CreatePost);
