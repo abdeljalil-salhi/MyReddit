@@ -26,6 +26,12 @@ const CreatePost: React.FC<createPostProps> = ({}) => {
             variables: {
               input: values,
             },
+            update: (cache) => {
+              // delete entire posts from cache
+              cache.evict({
+                fieldName: "posts",
+              });
+            },
           });
           if (!errors) {
             router.push("/");
